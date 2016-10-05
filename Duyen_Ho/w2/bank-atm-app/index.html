@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="bank-app.css">
+    <title>GA Bank ATM App</title>
+  </head>
+  <body>
+
+  <header>
+    <!-- logo -->
+    <img class="logo" src="https://pbs.twimg.com/profile_images/616323696601468930/SkNd2ppU.png" alt="General Assembly Logo" />
+    <h1>Online Bank</h1>
+  </header>
+
+  <section>
+    <!-- <div class="wrapper"> -->
+      <div class="savings">
+        <h2>Savings</h2>
+        <p>Your balance is...</p>
+        <p class="balance">$<span id="bal-savings">6.00</span></p>
+        <input type="number" min="0">
+        <button id="btn-withdraw-sav" class="btn" type="button">Withdraw</button>
+        <button id="btn-deposit-sav" class"btn" type="button">Deposit</button>
+      </div>
+      <div class="cheque">
+        <h2>Cheque</h2>
+        <p>Your balance is...</p>
+        <p class="balance">$<span id="bal-cheque">9.00</span></p>
+        <input type="number" min="0">
+        <button id="btn-withdraw-cheq" class="btn" type="button" min="0">Withdraw</button>
+        <button id="btn-deposit-cheq" class"btn" type="button" min="0">Deposit</button>
+      </div>
+
+    <!-- </div> -->
+
+  </section>
+
+  <script src="bank-app.js"></script>
+  </body>
+</html>
