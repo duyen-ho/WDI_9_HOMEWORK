@@ -1,110 +1,197 @@
 console.log('app works');
 
-// balances
-var balanceSav = document.getElementsByTagName('span')[0];
-var balanceCheq = document.getElementsByTagName('span')[0];
+var currentBalance = {
+  sav: 0,
+  cheq: 0
+}
 
-// inputs
-var inputSav = document.getElementsByTagName('input')[0];
-var inputCheq = document.getElementsByTagName('input')[0];
+var balanceSavHTML = document.getElementById('balance-sav');
+var balanceCheqHTML = document.getElementById('balance-cheq');
 
-var add = function(num1, num2) {
-  return num1 + num2;
+var amountInputSav = document.getElementsByTagName('input')[0];
+var amountInputCheq = document.getElementsByTagName('input')[1];
+
+var depositBtnSav = document.getElementById('btn-deposit-sav');
+var withdrawBtnSav = document.getElementById('btn-withdraw-sav')
+
+var depositBtnCheq = document.getElementById('btn-deposit-cheq');
+var withdrawBtnCheq = document.getElementById('btn-withdraw-cheq')
+
+var transactionMsg = document.getElementById('message');
+
+var backgroundSav = document.getElementById('savings');
+var backgroundCheq = document.getElementById('cheque');
+
+// opening balances at $0
+backgroundSav.style.backgroundColor = 'red'
+backgroundCheq.style.backgroundColor = 'red'
+
+function deposit(amount, balance) {
+  if (amount > 0) {
+    return balance = balance += amount;
+  } else {
+    return false;
+  };
 };
 
-var subtract = function(num1, num2) {
-  return num1 - num2;
-}
-
-var prepCurrency = function(input) {
-  var num = 0;
-  if (input === balanceSav || input === balanceCheq){
-    var num = parseFloat(input.innerHTML).toFixed(2)/1;
+function withdraw(amount, balance) {
+  if (amount <= balance) {
+    return balance = balance -= amount;
   } else {
-    var num = parseFloat(input.value).toFixed(2)/1;
+    return false;
+  };
+};
+
+// not working - unfinished, rethink logic
+function overdraft(amount) {
+  var withdrawal1;
+  var withdrawal2;
+  if (currentBalance.sav > currentBalance.cheq) {
+    console.log('currentBalance.sav > currentBalance.cheq');
+    withdrawal1 = currentBalance.sav - amount;
+    withdrawal2 = currentBalance.cheq + withdrawal1;
+    // problems calling function
+    withdraw(withdrawal1, currentBalance.sav);
+    withdraw(withdrawal2, currentBalance.cheq);
+    transactionMsg.innerHTML = 'Your overdraft withdrawal: $'
+    // console.log(withdrawal1)
+    // console.log(withdrawal2)
+  } else if (currentBalance.sav < currentBalance.cheq) {
+    console.log('currentBalance.sav < currentBalance.cheq');
+    withdrawal1 = currentBalance.cheq - amount;
+    withdrawal2 = currentBalance.sav - withdrawal1;
+    withdraw(withdrawal1, currentBalance.cheq);
+    withdraw(withdrawal2, currentBalance.sav);
+    transactionMsg.innerHTML = 'Your overdraft withdrawal: $'
+    // console.log(withdrawal1)
+    // console.log(withdrawal2)
+  } else {
+    console.log('equal amounts')
+    withdrawal1 = currentBalance.cheq - amount;
+    withdrawal2 = currentBalance.sav - amount;
   }
-  return num;
-}
+};
 
-// toFixed two decimal places - returns a string
-// divide by 1 to convert back to number - is this acceptable?
-// doubling up on conversion - is there a better way?
+// to send new value to html
+function updateBalance(account, balance, background) {
+  account.innerHTML = '$' + balance.toFixed(2);
+  if (balance === 0) {
+    background.style.backgroundColor = 'red';
+  } else {
+    background.style.backgroundColor = 'gray';
+  }
+};
 
-var depositSav = function() {
-  var bal = prepCurrency(balanceSav);
-  var amount = prepCurrency(inputSav);
-  balanceSav.innerHTML = add(bal, amount);
-}
+// buttons
+depositBtnSav.addEventListener('click', function() {
+  // get input and balance amounts
+  var amount = parseFloat(amountInputSav.value);
+  var balance = currentBalance.sav;
+  var newBal = deposit(amount, balance);
+  // make deposit and update account
+  updateBalance(balanceSavHTML, newBal, backgroundSav);
+  // clear input field
+  amountInputSav.value = '';
+  transactionMsg.innerHTML = 'Your deposit amount: $' + amount.toFixed(2);
+  return currentBalance.sav = newBal;
+});
 
-// not working
-var depositCheq = function() {
-  var bal = prepCurrency(balanceCheq);
-  var amount = prepCurrency(inputCheq);
-  balanceCheq.innerHTML = add(bal, amount);
-}
+withdrawBtnSav.addEventListener('click', function() {
+  var amount = parseFloat(amountInputSav.value);
+  var balance = currentBalance.sav;
+  // var newBal = withdraw(amount, balance);
+  var overdraftAccounts = currentBalance.sav + currentBalance.cheq
+  // overdraft
+  if (amount > balance && amount < overdraftAccounts) {
+    overdraft(amount);
+    // console.log('overdraft on');
+  } else if (amount > balance && amount > overdraftAccounts) {
+    amountInputSav.value = '';
+    // console.log('overdraft off');
+    transactionMsg.innerHTML = 'You have insufficient funds';
+    return false;
+    // run as normal
+  } else {
+    var newBal = withdraw(amount, balance);
+    updateBalance(balanceSavHTML, newBal, backgroundSav);
+    amountInputSav.value = '';
+    transactionMsg.innerHTML = 'Your withdrawal amount: $' + amount.toFixed(2);
+    return currentBalance.sav = newBal;
+  };
+});
 
-// not working
-var withdrawSav = function() {
-  var bal = prepCurrency(balanceSav);
-  var amount = prepCurrency(withdrawSav);
-  balanceSav.innerHTML = subtract(bal, amount);
-}
+depositBtnCheq.addEventListener('click', function() {
+  var amount = parseFloat(amountInputCheq.value);
+  var balance = currentBalance.cheq;
+  var newBal = deposit(amount, balance);
+  updateBalance(balanceCheqHTML, newBal, backgroundCheq);
+  amountInputCheq.value = '';
+  transactionMsg.innerHTML = 'Your deposit amount: $' + amount.toFixed(2);
+  return currentBalance.cheq = newBal;
+});
 
-// not working
-var withdrawCheq = function() {
-  var bal = prepCurrency(balanceCheq);
-  var amount = prepCurrency(withdrawCheq);
-  balanceCheq.innerHTML = subtract(bal, amount);
-}
-
-// get it to work, then:
-// refactor above into one deposit and withdraw function with one parameter
-// pass in savings or cheque as arguments
-// syntax:
-      // btnDepositSav.addEventListener('click', function(){
-      //   deposit(button);
-      // });
-
-// btn events
-var btnDepositSav = document.getElementById('btn-deposit-sav');
-btnDepositSav.addEventListener('click', depositSav);
-
-var btnDepositCheq = document.getElementById('btn-deposit-cheq');
-btnDepositCheq.addEventListener('click', depositCheq);
-
-var btnWithdrawSav = document.getElementById('btn-withdraw-sav');
-btnWithdrawSav.addEventListener('click', withdrawSav);
-
-var btnWithdrawCheq = document.getElementById('btn-withdraw-cheq');
-btnWithdrawCheq.addEventListener('click', withdrawCheq);
-
-
-
-// change input fields to two decimals - rewrite prepCurrency()
-
-
-
+withdrawBtnCheq.addEventListener('click', function() {
+  var amount = parseFloat(amountInputCheq.value);
+  var balance = currentBalance.cheq;
+  var newBal = withdraw(amount, balance);
+  updateBalance(balanceCheqHTML, newBal);
+  transactionMsg.innerHTML = 'Your withdrawal amount: $' +
+  amountInputCheq.value = '';
+  return currentBalance.cheq = newBal;
+});
 
 
 /*
-### Specification:
+to do:
+- fix overdraft for both accounts
+- stop balance 0 from running and throwing an error
+- restrict input fields to two decimal places
+- remove 'e' from input number
+- activate tab out of input and 'enter' to action buttons (convenience)
+- refactor code
+- style
 
-* Keep track of the checking and savings balances somewhere
-* Add functionality so that a user can deposit money into one of the bank accounts.
-* Make sure you are updating the display and manipulating the HTML of the page
-so a user can see the change.
-* Add functionality so that a user can withdraw money from one of the bank accounts.
-* Make sure you are updating the display and manipulating the HTML of the page
-so a user can see the change.
-* Make sure the balance in an account can't go negative. If a user tries to
-withdraw more money than exists in the account, ignore the transaction.
-* When the balance of the bank account is $0 the background of that bank account
-should be red. It should be gray when there is money in the account
-* What happens when the user wants to withdraw more money from the checking
-account than is in the account? These accounts have overdraft protection, so if
-a withdrawal can be covered by the balances in both accounts, take the checking
-balance down to $0 and take the rest of the withdrawal from the savings account.
-If the withdrawal amount is more than the combined account balance, ignore it.
-* Make sure there is overdraft protection going both ways.
-* Are there ways to refactor your code to make it DRYer
+
+questions:
+- is this how shadowing is applied or should it not be applied?
+- will i run in to problems?
+- is the alternative to send the variable out each time?
+
+
+for the next iteration:
+- account and time details for transactionMsg
+- var transactionNo = [];
+
+recode with module pattern / factory function
+
+  var makeAccount = function(accountName, startingBalance) {
+
+    var name = accountName;
+    var balance = startingBalance;
+    // var balance = 0;
+
+    return {
+      deposit: function(amount) {
+        balance += amount;
+      },
+      getBalance: function() {
+        return balance;
+      }
+    }
+  }
+
+
+tips from DT:
+1. do it fast
+    - code design
+    - separation of concerns
+2. do it right
+3. do it better
+
+
+tips from Leon:
+- don't store values in the HTML element
+- store values in variables and change the HTML element
+- simplify if statements
+- booleans rock!
 */

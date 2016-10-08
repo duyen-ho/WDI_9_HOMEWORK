@@ -1,32 +1,59 @@
 * {
   box-sizing: border-box;
-  font-family: sans-serif;
-  /*border: 1px solid red;*/
+  font-family: Helvetica, serif;
+  /*border: 1px solid deepPink;*/
 }
 
-h1 {
-  display: inline-block;
-  text-align: center;
+body {
+  margin: 0;
+}
+header {
+  background-color: black;
+  padding: 1em;
 }
 
 section {
-  overflow: auto;
   text-align: center;
 }
 
-.logo {
-  display: inline;
-  width: 150px;
+h1 {
+  display: block;
+  text-align: center;
+  color: white;
+  font-size: 2em
 }
 
-.savings,
-.cheque {
+h2 {
+  margin: 10px 0;
+}
+
+p, input {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+input {
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.account {
   width: 300px;
   height: 300px;
-  border: 1px solid red;
+  border: 3px solid black;
   display: inline-block;
+  padding: 2em;
+  margin: 5em 2em;
 }
 
 .balance {
-  background-color: blue;
+  font-size: 1.3em;
+}
+
+.btn {
+  font-size: 1em;
+  padding: 7px 10px;
+  margin: 0 5px;
+  color: black;
+  background-color: white;
 }
