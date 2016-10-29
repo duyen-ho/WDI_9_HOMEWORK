@@ -1,15 +1,30 @@
 <form action="/about" method="post">
 
-  <% @result['Search'].each do |result| %>
+  <section class="search-wrapper">
 
-    <div>
-      <input type="hidden" name="result_link">
-      <p><%= result['Title'] %></p>
-      <p><%= result['Year'] %></p>
-    </div>
-    <button>Movie Details</button>
-  <% end %>
+    <% @results['Search'].each do |result| %>
+
+      <div class="search-movie">
+        <div class="search-poster">
+          <% if result['Poster'] == 'N/A' %>
+            <div class="no-poster-wrapper">
+              <h4 class="no-poster">No poster available</h4>
+            </div>
+          <% else %>
+            <a href="/about?movie=<%= result['imdbID'] %>">
+              <img src="<%= result['Poster'] %>" alt=" <%= result['Title'] %> movie poster">
+            </a>
+          <% end %>
+        </div>
+        <div class="search-info">
+          <%# pass imdbID to query string and make new API call %>
+          <a href="/about?movie=<%= result['imdbID'] %>"><%= result['Title'] %></a>
+          <h3><%= result['Year'] %></h3>
+        </div>
+      </div>
+
+    <% end %>
+
+  </section>
 
 </form>
-
-<%# Change title to a tags - how to use params with a tags? %>
