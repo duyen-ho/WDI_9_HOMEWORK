@@ -1,0 +1,32 @@
+<h2>Search Results</h2>
+
+<form action="/about" method="post">
+
+  <section class="search-wrapper">
+
+    <% @results['Search'].each do |result| %>
+
+      <div class="search-movie">
+        <div class="search-poster">
+          <% if result['Poster'] == 'N/A' %>
+            <div class="no-poster-wrapper">
+              <h4 class="no-poster">No poster available</h4>
+            </div>
+          <% else %>
+            <a href="/about?movie=<%= result['imdbID'] %>">
+              <img src="<%= result['Poster'] %>" alt=" <%= result['Title'] %> movie poster">
+            </a>
+          <% end %>
+        </div>
+        <div class="search-info">
+          <%# pass imdbID to query string and make new API call %>
+          <a href="/about?movie=<%= result['imdbID'] %>"><%= result['Title'] %></a>
+          <h3><%= result['Year'] %></h3>
+        </div>
+      </div>
+
+    <% end %>
+
+  </section>
+
+</form>
