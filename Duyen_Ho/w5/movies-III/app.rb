@@ -4,6 +4,7 @@ require 'httparty'
 require 'pry'
 require_relative 'db_config'
 require_relative 'models/movie'
+require_relative 'models/search'
 
 
 get '/' do
@@ -12,6 +13,12 @@ end
 
 get '/search_results' do
   @user_input = params[:title]
+
+  # add search word to searches table in moviesdb
+  search_word = Search.new
+  search_word.title = @user_input
+  search_word.save
+
   @results = HTTParty.get("http://omdbapi.com/?s=#{@user_input}")
 
   if @results['Response'] == 'False'
@@ -36,9 +43,8 @@ get '/about' do
 
   # search local moviesdb first
   local_movie = Movie.find_by(imdb_id: @imdb_id)
-  # binding.pry
 
-  # if movie doesn't exit, go to API
+  # if movie doesn't exist, go to API
   if !local_movie
     @result = HTTParty.get("http://omdbapi.com/?i=#{@imdb_id}")
     # data mapped to about page
@@ -55,12 +61,14 @@ get '/about' do
     new_movie.imdb_rating = @result['imdbRating']
     new_movie.run_time = @result['Runtime']
     new_movie.imdb_id = @result['imdbID']
+    new_movie.poster_url = @result['Poster']
     # remember to save!
     new_movie.save
 
   else
     # pull data from local_movie and send to about page
-    @result = local_movie
+    @result = {}
+
     @result['Title'] = local_movie.title
     @result['Year'] = local_movie.year
     @result['Director'] = local_movie.director
@@ -69,12 +77,23 @@ get '/about' do
     @result['Plot'] = local_movie.plot
     @result['imdbRating'] = local_movie.imdb_rating
     @result['Runtime'] = local_movie.run_time
+    @result['Poster'] = local_movie.poster_url
+    # binding.pry
+
   end
   erb :about
+end
+
+get '/search_history' do
+  # get all search words
+  @search_words = Search.all
+  # binding.pry
+  erb :search_history
 end
 
 
 # Future considerations:
 # store keys in db table to reflect API keys
 # use loop to store, read and print values
-# eg. Pedro's example - think about what data is needed in the db and code readability
+# eg. Pedro's example - think about what data is needed and code readability
+# for search history page - could add time and date or populate clicked movie

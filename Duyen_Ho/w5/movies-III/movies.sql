@@ -13,3 +13,8 @@ CREATE TABLE movies (
   poster_url TEXT,
   imdb_id VARCHAR(15)
 );
+
+CREATE TABLE searches (
+  id SERIAL4 PRIMARY KEY,
+  title VARCHAR(300)
+);
