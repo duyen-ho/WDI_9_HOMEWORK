@@ -5,14 +5,14 @@ $(document).ready(function() {
   $('button').on('click', function(event) {
     event.preventDefault();
 
-    var $title = $('input').val();
+    var title = $('input').val();
     // console.log($title);
 
     // make a request to the api
     var options = {
-      url: 'http://omdbapi.com/',
+      url: 'http://omdbapi.com/?s=' + title,
       method: 'get',
-      data: { s: $title }
+      data: { s: title }
     };
 
     // returns a response
@@ -34,7 +34,7 @@ $(document).ready(function() {
       // console.log(resultsList);
       var $searchResults = $('.search-results');
 
-      // prevent from clicking twice by clearing input field
+      // prevent from clicking twice by clearing search container
       $searchResults.empty().append('<ul>' + resultsList.join('') + '</ul>');
     };
 

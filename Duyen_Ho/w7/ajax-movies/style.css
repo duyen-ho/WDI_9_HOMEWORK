@@ -13,12 +13,13 @@ body {
 h1 {
   margin: 3em 0;
   text-align: center;
+  font-size: 2em;
 }
 
 h2 {
   margin-bottom: 4em;
   color: #c99;
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: 300;
   letter-spacing: 0.2em;
   text-align: center;;
@@ -77,6 +78,15 @@ a:hover {
 }
 
 /* Search Results */
+.search-results {
+  margin-top: 5em;
+}
+
+.search-results > ul {
+
+  list-style: none;
+}
+
 .search-wrapper {
   margin: 0 auto;
   width: 80%;
